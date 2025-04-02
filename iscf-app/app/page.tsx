@@ -1,8 +1,24 @@
-import Image from "next/image";
+"use client";
 
+import Image from "next/image";
 import Dashboard from "@/components/Dashboard";
+import { useState } from "react";
+import { database } from "@/lib/firebase"; // Ensure this is your Firebase config file
+import { ref, set } from "firebase/database";
 
 export default function Home() {
+  const [delay, setDelay] = useState<number>(1.0); // Default value is 1.0
+
+  // Function to update the delay value in Firebase
+  const handleChangeDelay = async () => {
+    try {
+      await set(ref(database, "delay"), delay); // Update the "delay" branch in Firebase
+      alert("Delay value updated successfully!");
+    } catch (error) {
+      console.error("Error updating delay:", error);
+      alert("Failed to update delay.");
+    }
+  };
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
@@ -36,7 +52,33 @@ export default function Home() {
               height={38}
               priority
             />
-            <Dashboard /> {/* ADD THE DASHBOARD COMPONENT HERE */}
+            <div className="flex items-center gap-6 w-full">
+            <Dashboard /> {/* Existing Dashboard Component */}
+
+            {/* Input field and button for changing delay */}
+            <div className="flex flex-col items-center gap-6">
+            <li className="tracking-[-.01em] text-center text-lg font-medium list-none">
+              Change the data extraction delay here in seconds
+            </li>
+            
+            <input
+              type="number"
+              step="1"
+              value={delay}
+              onChange={(e) => setDelay(parseInt(e.target.value) || 1.0)}
+              className="border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center w-48"
+              placeholder="Enter delay value"
+            />
+
+            <button
+              onClick={handleChangeDelay}
+              className="bg-gray-500 text-white px-6 py-3 rounded hover:bg-gray-600 transition font-semibold"
+            >
+              Change Delay
+            </button>
+          </div>
+
+          </div>
           </main>
         </div>
         <div className="flex gap-4 items-center flex-col sm:flex-row">

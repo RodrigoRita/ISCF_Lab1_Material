@@ -30,10 +30,27 @@ def get_data_from_simulation(id):
             return data
     return None
 
+
+
 class DataCollection():
+
     def __init__(self):
         pass        
 
+    def change_delay(self):
+        response = requests.get(database_url + "/delay.json")  # Ensure .json at the end
+        if response.status_code == 200:
+            try:
+                delay = int(response.json())  # Convert to int
+                return delay  # Ensure delay is returned
+            except (ValueError, TypeError):  # Handle conversion errors
+                print("Error: Received non-numeric data")
+        else:
+            print("Error fetching data:", response.status_code)
+
+        return delay  # Return a default value to prevent NoneType issues
+
+    
     def run(self):
         
         while True:
@@ -79,8 +96,8 @@ class DataCollection():
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Connection error: {str(e)}")
 
-
-            time.sleep(1)
+            delay = self.change_delay()
+            time.sleep(delay)
 
 if __name__ == '__main__':
     sim.simxFinish(-1) # just in case, close all opened connections

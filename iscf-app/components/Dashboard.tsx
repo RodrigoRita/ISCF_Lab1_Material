@@ -39,6 +39,11 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
+    const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    return date.toISOString().slice(0, 19).replace("T", " "); // Formats as "2025-04-02 14:30:00"
+  };
+
   return (
     <div className="bg-white dark:bg-gray-900 p-10 rounded-lg shadow-lg w-full max-w-5xl">
       <h2 className="text-2xl font-bold mb-4 text-center">Dashboard</h2>
@@ -64,7 +69,7 @@ export default function Dashboard() {
 
           {/* Temperature Chart */}
           <h3 className="text-lg font-bold text-center mt-10">Temperature Data</h3>
-          <ResponsiveContainer width="101%" height={300}>
+          <ResponsiveContainer width="100%" height={300}>
             <LineChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="timestamp" tickFormatter={(tick) => new Date(tick * 1000).toLocaleTimeString()} />
