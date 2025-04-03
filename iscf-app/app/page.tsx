@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Dashboard from "@/components/Dashboard";
+import Report from "@/components/Report"
 import { useState } from "react";
 import { database } from "@/lib/firebase"; // Ensure this is your Firebase config file
 import { ref, set } from "firebase/database";
 
 export default function Home() {
-  const [delay, setDelay] = useState<number>(1.0); // Default value is 1.0
+  const [delay, setDelay] = useState<number>(1); // Default value is 1.0
 
   // Function to update the delay value in Firebase
   const handleChangeDelay = async () => {
@@ -79,8 +80,11 @@ export default function Home() {
           </div>
 
           </div>
+           <Report/>
           </main>
         </div>
+       
+        
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"

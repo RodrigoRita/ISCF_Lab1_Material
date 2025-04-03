@@ -39,11 +39,6 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-    const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000);
-    return date.toISOString().slice(0, 19).replace("T", " "); // Formats as "2025-04-02 14:30:00"
-  };
-
   return (
     <div className="bg-white dark:bg-gray-900 p-10 rounded-lg shadow-lg w-full max-w-5xl">
       <h2 className="text-2xl font-bold mb-4 text-center">Dashboard</h2>
