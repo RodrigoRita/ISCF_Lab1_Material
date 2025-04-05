@@ -4,10 +4,16 @@ import { useEffect, useState } from "react";
 import { database } from "@/lib/firebase";
 import { ref, onValue } from "firebase/database";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const { data: session} = useSession();
+
+  //Thesholds
+  const temperatureThreshold = 50;
+  const accelerationThreshold = 10;
 
   useEffect(() => {
     const dbRef = ref(database, "sensor_data");
@@ -28,11 +34,26 @@ export default function Dashboard() {
 
         // Sort by timestamp to ensure chronological order
         formattedData.sort((a, b) => a.timestamp - b.timestamp);
+        
+
+        if (formattedData.some(item => item.temperature > temperatureThreshold)) {
+          alert("Warning! Temperature is too high!");
+        }
+        if (formattedData.some(item => item.acceleration_x > accelerationThreshold)) {
+          alert("Warning! Acceleration in the X axis is too high!");
+        }
+        if (formattedData.some(item => item.acceleration_y > accelerationThreshold)) {
+          alert("Warning! Acceleration in the Y axis is too high!");
+        }
+        if (formattedData.some(item => item.acceleration_z > accelerationThreshold)) {
+          alert("Warning! Acceleration in the Z axis is too high!");
+        }
 
         setData(formattedData);
       } else {
         console.log("No data available in Firebase.");
       }
+      
       setLoading(false);
     });
 
@@ -42,42 +63,46 @@ export default function Dashboard() {
   return (
     <div className="bg-white dark:bg-gray-900 p-10 rounded-lg shadow-lg w-full max-w-5xl">
       <h2 className="text-2xl font-bold mb-4 text-center">Dashboard</h2>
+      {session ? (
+  loading ? (
+    <p>Loading...</p>
+  ) : data.length > 0 ? (        
+    <>
+      {/* Acceleration Chart */}
+      <h3 className="text-lg font-bold text-center mt-6">Acceleration Data</h3>
+      <ResponsiveContainer width="101%" height={300}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="timestamp" tickFormatter={(tick) => new Date(tick * 1000).toLocaleTimeString()} />
+          <YAxis domain={[-20, 20]} />
+          <Tooltip labelFormatter={(label) => `Time: ${new Date(label * 1000).toLocaleTimeString()}`} />
+          <Legend />
+          <Line type="monotone" dataKey="acceleration_x" stroke="#8884d8" strokeWidth={2} />
+          <Line type="monotone" dataKey="acceleration_y" stroke="#82ca9d" strokeWidth={2} />
+          <Line type="monotone" dataKey="acceleration_z" stroke="#ff7300" strokeWidth={2} />
+        </LineChart>
+      </ResponsiveContainer>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : data.length > 0 ? (
-        <>
-          {/* Acceleration Chart */}
-          <h3 className="text-lg font-bold text-center mt-6">Acceleration Data</h3>
-          <ResponsiveContainer width="101%" height={300}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" tickFormatter={(tick) => new Date(tick * 1000).toLocaleTimeString()} />
-              <YAxis domain={[-20,20]}/>
-              <Tooltip labelFormatter={(label) => `Time: ${new Date(label * 1000).toLocaleTimeString()}`} />
-              <Legend />
-              <Line type="monotone" dataKey="acceleration_x" stroke="#8884d8" strokeWidth={2} />
-              <Line type="monotone" dataKey="acceleration_y" stroke="#82ca9d" strokeWidth={2} />
-              <Line type="monotone" dataKey="acceleration_z" stroke="#ff7300" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
+      {/* Temperature Chart */}
+      <h3 className="text-lg font-bold text-center mt-10">Temperature Data</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="timestamp" tickFormatter={(tick) => new Date(tick * 1000).toLocaleTimeString()} />
+          <YAxis domain={[0, 50]} />
+          <Tooltip labelFormatter={(label) => `Time: ${new Date(label * 1000).toLocaleTimeString()}`} />
+          <Legend />
+          <Line type="monotone" dataKey="temperature" stroke="#ff0000" strokeWidth={2} />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
+  ) : (
+    <p>No data available.</p>
+  )
+) : (
+  <p>Login to get our newest dashboard!</p>
+)}
 
-          {/* Temperature Chart */}
-          <h3 className="text-lg font-bold text-center mt-10">Temperature Data</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" tickFormatter={(tick) => new Date(tick * 1000).toLocaleTimeString()} />
-              <YAxis domain={[0,50]}></YAxis>
-              <Tooltip labelFormatter={(label) => `Time: ${new Date(label * 1000).toLocaleTimeString()}`} />
-              <Legend />
-              <Line type="monotone" dataKey="temperature" stroke="#ff0000" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </>
-      ) : (
-        <p>No data available.</p>
-      )}
     </div>
   );
 }

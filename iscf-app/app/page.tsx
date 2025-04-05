@@ -2,13 +2,17 @@
 
 import Image from "next/image";
 import Dashboard from "@/components/Dashboard";
+import Login from "@/components/Login/Login";
 import Report from "@/components/Report"
 import { useState } from "react";
 import { database } from "@/lib/firebase"; // Ensure this is your Firebase config file
 import { ref, set } from "firebase/database";
+import { useSession } from "next-auth/react";
+
 
 export default function Home() {
   const [delay, setDelay] = useState<number>(1); // Default value is 1.0
+  const { data: session} = useSession();
 
   // Function to update the delay value in Firebase
   const handleChangeDelay = async () => {
@@ -53,6 +57,7 @@ export default function Home() {
               height={38}
               priority
             />
+            <>
             <div className="flex items-center gap-6 w-full">
             <Dashboard /> {/* Existing Dashboard Component */}
 
@@ -61,7 +66,7 @@ export default function Home() {
             <li className="tracking-[-.01em] text-center text-lg font-medium list-none">
               Change the data extraction delay here in seconds
             </li>
-            
+            {session ?
             <input
               type="number"
               step="1"
@@ -70,6 +75,7 @@ export default function Home() {
               className="border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center w-48"
               placeholder="Enter delay value"
             />
+           : <p> Login in order to change the delay </p>} 
 
             <button
               onClick={handleChangeDelay}
@@ -77,10 +83,16 @@ export default function Home() {
             >
               Change Delay
             </button>
-          </div>
+
 
           </div>
-           <Report/>
+          </div>
+          <div className="flex flex-col items-center  w-full min-h-[50vh]">
+            {session ? <Report /> : <p>Login in order to get a report</p>}
+            <br/>
+            <Login />
+          </div>
+           </>
           </main>
         </div>
        
