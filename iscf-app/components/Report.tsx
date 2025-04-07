@@ -48,6 +48,8 @@ const Report = () => {
   const temperatureChartInstance = useRef<Chart | null>(null);
   const otherChartInstance = useRef<Chart | null>(null);
 
+  // change locate
+  
   useEffect(() => {
     const fetchData = async () => {
       const sensorRef = ref(database, "sensor_data");
@@ -61,13 +63,19 @@ const Report = () => {
     };
     fetchData();
   }, [days, hours, minutes]);
+  
 
   const processSummary = (data: SensorData[]) => {
     if (data.length === 0) return;
 
     const latestTimestamp = Math.max(...data.map(item => item.timestamp));
     const timeRange = days * 24 * 60 + hours * 60 + minutes;
+    //addd
+    const filteredData = data.filter(item =>
+      item.timestamp >= latestTimestamp - timeRange * 60
+    );
 
+    /*
     const filteredData = data
       .map(item => ({
         timestamp: item.timestamp,
@@ -77,6 +85,7 @@ const Report = () => {
         z: parseFloat(item.z as unknown as string)
       }))
       .filter(item => item.timestamp >= latestTimestamp - timeRange * 60);
+    */
 
     if (filteredData.length === 0) return;
 

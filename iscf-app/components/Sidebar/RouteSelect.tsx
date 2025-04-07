@@ -10,6 +10,7 @@ export const RouteSelect = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
+  {/* 
   const handleAuthNavigation = () => {
     if (!session) {
       router.push("/login"); // vai para login se não tiver sessão
@@ -17,6 +18,8 @@ export const RouteSelect = () => {
       router.push("/profile"); // ou outra rota, como "/dashboard", se quiseres
     }
   };
+  */}
+  
 
   return (
     <div className="space-y-1">

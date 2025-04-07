@@ -64,9 +64,9 @@ export default function Dashboard1() {
               <YAxis domain={[-20,20]}/>
               <Tooltip labelFormatter={(label) => `Time: ${new Date(label * 1000).toLocaleTimeString()}`} />
               <Legend />
-              <Line type="monotone" dataKey="acceleration_x" stroke="#8884d8" strokeWidth={2} />
-              <Line type="monotone" dataKey="acceleration_y" stroke="#82ca9d" strokeWidth={2} />
-              <Line type="monotone" dataKey="acceleration_z" stroke="#ff7300" strokeWidth={2} />
+              <Line type="monotone" dataKey="x" stroke="#8884d8" strokeWidth={2} />
+              <Line type="monotone" dataKey="y" stroke="#82ca9d" strokeWidth={2} />
+              <Line type="monotone" dataKey="z" stroke="#ff7300" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
 
