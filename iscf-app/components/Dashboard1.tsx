@@ -5,8 +5,17 @@ import { database } from "@/lib/firebase";
 import { ref, onValue } from "firebase/database";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-export default function Dashboard() {
-  const [data, setData] = useState<any>([]);
+type SensorData = {
+  temperature: number;
+  timestamp: number;
+  x: number;
+  y: number;
+  z: number;
+};
+
+
+export default function Dashboard1() {
+  const [data, setData] = useState<SensorData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,12 +29,11 @@ export default function Dashboard() {
         // Convert object data into an array for recharts
         const formattedData = Object.keys(value).map((registerId) => ({
           timestamp: value[registerId].timestamp,
-          acceleration_x: value[registerId].x,
-          acceleration_y: value[registerId].y,
-          acceleration_z: value[registerId].z,
-          temperature: value[registerId].temperature, // Adding temperature
+          x: value[registerId].x,
+          y: value[registerId].y,
+          z: value[registerId].z,
+          temperature: value[registerId].temperature,
         }));
-
         // Sort by timestamp to ensure chronological order
         formattedData.sort((a, b) => a.timestamp - b.timestamp);
 
@@ -41,7 +49,7 @@ export default function Dashboard() {
 
   return (
     <div className="bg-white dark:bg-gray-900 p-10 rounded-lg shadow-lg w-full max-w-5xl">
-      <h2 className="text-2xl font-bold mb-4 text-center">Dashboard</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Graphic</h2>
 
       {loading ? (
         <p>Loading...</p>
