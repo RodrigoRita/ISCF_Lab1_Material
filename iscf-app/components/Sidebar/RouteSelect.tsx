@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 
 export const RouteSelect = () => {
   const { data: session } = useSession();
-  const router = useRouter();
+  //const router = useRouter();
 
   {/* 
   const handleAuthNavigation = () => {
