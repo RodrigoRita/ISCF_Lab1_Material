@@ -8,5 +8,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
     })
   ],
-})
+ secret: process.env.NEXTAUTH_SECRET,  // Ensure this is passed
+ debug: process.env.NODE_ENV === "development",  // For logging in dev
+});
 
