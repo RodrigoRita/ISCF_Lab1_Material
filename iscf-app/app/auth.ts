@@ -1,24 +1,14 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { NextAuthOptions } from "next-auth";
-
-export const authOptions: NextAuthOptions = {
+import NextAuth from "next-auth"
+import Google from "next-auth/providers/google"
+ 
+export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    GoogleProvider({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",  // Explicitly request the authorization code
-          code_challenge_method: "", // This disables PKCE
-        },
-      },
-    }),
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    })
   ],
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
-};
+ secret: process.env.NEXTAUTH_SECRET,  // Ensure this is passed
+ debug: process.env.NODE_ENV === "development",  // For logging in dev
+});
+
