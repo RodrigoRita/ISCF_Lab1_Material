@@ -1,6 +1,8 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 
+console.log(process.env.NEXTAUTH_URL)
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
